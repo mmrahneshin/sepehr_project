@@ -1,6 +1,6 @@
 venv/
 db.sqlite3
 sepehr_judge/__pycache__/
-admin_side/__pycache__/
+core/__pycache__/
 mycontent/
-admin_side/migrations/
+core/migrations/
