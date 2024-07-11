@@ -1,2 +1,5 @@
 venv/
 db.sqlite3
+server/__pycache__/
+sepehr/__pycache__/
+mycontent/
