@@ -1,5 +1,5 @@
 venv/
 db.sqlite3
-server/__pycache__/
-sepehr/__pycache__/
+sepehr_judge/__pycache__/
+admin_side/__pycache__/
 mycontent/
