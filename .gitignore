@@ -3,3 +3,4 @@ db.sqlite3
 sepehr_judge/__pycache__/
 admin_side/__pycache__/
 mycontent/
+admin_side/migrations/
