@@ -1,6 +1,10 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .serializers import StudentSignupSerializer, StudentLoginSerializer
+from .serializers import (
+    StudentSignupSerializer,
+    StudentLoginSerializer,
+    ExerciseSerializer,
+)
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
@@ -8,6 +12,7 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError as DjangoIntegrityError
+from core.models import Exercise
 
 
 @api_view(["POST"])
@@ -79,3 +84,14 @@ def student_signup(request):
 
     # Return validation errors if serializer is not valid
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def exercise_list(request):
+    difficulty_level = request.query_params.get("dfl")
+    if difficulty_level is None:
+        exercises = Exercise.objects.all()
+    else:
+        exercises = Exercise.objects.filter(difficulty_level=difficulty_level)
+    serializer = ExerciseSerializer(exercises, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

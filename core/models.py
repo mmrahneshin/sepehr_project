@@ -19,6 +19,11 @@ class Student(models.Model):
 
 
 class Exercise(models.Model):
+    DIFFICULTY_CHOICES = [
+        ("Easy", "Easy"),
+        ("Medium", "Medium"),
+        ("Hard", "Hard"),
+    ]
     title = models.CharField(max_length=128, blank=False, unique=True)
     exercise_name = models.CharField(
         primary_key=True, max_length=128, blank=False, unique=True
@@ -27,10 +32,15 @@ class Exercise(models.Model):
     is_visible = models.BooleanField(default=False)
     java_definition = ZipFileField(upload_to="mycontent/", blank=True)
     cpp_definition = ZipFileField(upload_to="mycontent/", blank=True)
-    weight = models.IntegerField(default=1)
+    weight = models.IntegerField(
+        default=1, validators=[MinValueValidator(1), MaxValueValidator(10)]
+    )
+    difficulty_level = models.CharField(
+        max_length=6, choices=DIFFICULTY_CHOICES, default="Easy"
+    )
 
     def __str__(self):
-        return self.exercise_name
+        return self.title
 
 
 class Solution(models.Model):

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from core.models import Student
+from core.models import Student, Exercise
 
 
 class StudentLoginSerializer(serializers.ModelSerializer):
@@ -63,3 +63,9 @@ class StudentSignupSerializer(serializers.ModelSerializer):
             phone_number=validated_data.get("phone_number", None),
         )
         return student
+
+
+class ExerciseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exercise
+        fields = ["title", "difficulty_level"]
