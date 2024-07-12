@@ -15,6 +15,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# PASSWORD_HASHERS = [
+#     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+# ]
 
 FILE_COMPRESS_DELETE_OLD_FILE = True  # to delete old files after compressed
 FILE_COMPRESS_DELETE_OLD_FILE = False  # to not delete old files after compressed
@@ -120,3 +123,22 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+        # Add other authentication classes as needed
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    # Other settings
+}
+
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]

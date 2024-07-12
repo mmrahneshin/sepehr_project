@@ -1,0 +1,18 @@
+POST http://127.0.0.1:8000/student-login/login/ HTTP/1.1
+content-type: application/json
+
+{
+    "username_or_email": "me222@mail.com",
+    "password": "1234"
+}
+
+
+
+# POST http://127.0.0.1:8000/student-signup/signup/ HTTP/1.1
+# content-type: application/json
+
+# {
+#     "username": "mmrahneshin222",
+#     "password": "1234",
+#     "email" : "me222@mail.com"
+# }

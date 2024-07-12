@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
@@ -7,19 +8,14 @@ import uuid
 
 
 class Student(models.Model):
-    username = models.CharField(
-        primary_key=True, max_length=128, blank=False, unique=True
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="student_profile"
     )
-    password = models.CharField(max_length=128)
-    firstName = models.CharField(max_length=128)
-    lastName = models.CharField(max_length=128)
-    email = models.EmailField(blank=True)
-    date_joined = models.DateTimeField(default=timezone.now)
     is_assistant = models.BooleanField(default=False)
-    phone = PhoneNumberField(null=False, blank=False, unique=True)
+    phone_number = PhoneNumberField(unique=True, blank=True, null=True)
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
 
 class Exercise(models.Model):
