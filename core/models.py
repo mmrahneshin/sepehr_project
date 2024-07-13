@@ -4,7 +4,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 from compress_field import ZipFileField
-import uuid
 
 
 class Student(models.Model):
@@ -24,10 +23,9 @@ class Exercise(models.Model):
         ("Medium", "Medium"),
         ("Hard", "Hard"),
     ]
-    title = models.CharField(max_length=128, blank=False, unique=True)
-    exercise_name = models.CharField(
-        primary_key=True, max_length=128, blank=False, unique=True
-    )
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=128, blank=False)
+    exercise_name = models.CharField(max_length=128, blank=False, unique=True)
     exercise_content = models.TextField(blank=True)
     is_visible = models.BooleanField(default=False)
     java_definition = ZipFileField(upload_to="mycontent/", blank=True)
@@ -44,7 +42,7 @@ class Exercise(models.Model):
 
 
 class Solution(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
     student = models.OneToOneField(Student, on_delete=models.PROTECT)
     exercise = models.OneToOneField(Exercise, on_delete=models.PROTECT)
     solution_file = ZipFileField(upload_to="mycontent/")
@@ -54,12 +52,10 @@ class Solution(models.Model):
 
 
 class Result(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
     student = models.OneToOneField(Student, on_delete=models.PROTECT)
     exercise = models.OneToOneField(Exercise, on_delete=models.PROTECT)
-    solution = models.OneToOneField(
-        Solution, primary_key=True, on_delete=models.PROTECT
-    )
+    solution = models.OneToOneField(Solution, on_delete=models.PROTECT)
     score = models.IntegerField(
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )

@@ -68,4 +68,4 @@ class StudentSignupSerializer(serializers.ModelSerializer):
 class ExerciseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exercise
-        fields = ["title", "difficulty_level"]
+        fields = ["id", "title", "difficulty_level", "is_visible"]
