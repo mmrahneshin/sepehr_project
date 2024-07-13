@@ -105,7 +105,7 @@ class SolutionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Solution
-        fields = ["exercise_id", "solution_file"]
+        fields = ["exercise_id", "solution_file", "language"]
 
     def validate(self, attrs):
         exercise_id = attrs.pop("exercise_id")
@@ -130,12 +130,10 @@ class SolutionSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        print("@@@@@")
-        print(validated_data)
-        # validated_data.pop("exercise_id")
         solution = Solution.objects.create(
             student=validated_data["student"],
             exercise=validated_data["exercise"],
             solution_file=validated_data["solution_file"],
+            language=validated_data["language"],
         )
         return solution
