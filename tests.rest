@@ -38,6 +38,6 @@ Authorization: Token 15597257ca08bbda6943fde52aa9f6cdc6b176ee
 
 
 
-GET http://127.0.0.1:8000/exercises/2/results  HTTP/1.1
+GET http://127.0.0.1:8000/exercises/1/results  HTTP/1.1
 content-type: application/json 
 Authorization: Token 15597257ca08bbda6943fde52aa9f6cdc6b176ee

@@ -132,6 +132,6 @@ def get_results_by_exercise_and_student(request, pk):
 
     results = Result.objects.filter(exercise__id=pk, student__user=user)
 
-    serializer = ResultSerializer(results, many=True)
+    serializer = ResultSerializer(results, context={"request": request}, many=True)
 
     return Response(serializer.data)

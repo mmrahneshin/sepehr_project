@@ -141,10 +141,17 @@ class SolutionSerializer(serializers.ModelSerializer):
 
 class ResultSerializer(serializers.ModelSerializer):
     reference_id = serializers.SerializerMethodField()
+    solution_file = serializers.SerializerMethodField()
 
     class Meta:
         model = Result
         exclude = ["id", "student", "exercise", "solution"]
+
+    def get_solution_file(self, obj):
+        request = self.context.get("request")
+        if obj.solution:
+            return request.build_absolute_uri(obj.solution.solution_file.url)
+        return None
 
     def get_reference_id(self, obj):
         return f"{obj.exercise.id}_{obj.student.user.username}_{obj.solution.id}"
