@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from .serializers import (
     StudentSignupSerializer,
     StudentLoginSerializer,
-    ExerciseSerializer,
+    ExerciseDetailSerializer,
+    ExerciseListSerializer,
 )
 from rest_framework import status
 from django.contrib.auth import authenticate
@@ -87,11 +88,25 @@ def student_signup(request):
 
 
 @api_view(["GET"])
+@permission_classes([AllowAny])
 def exercise_list(request):
     difficulty_level = request.query_params.get("dfl")
     if difficulty_level is None:
         exercises = Exercise.objects.all()
     else:
         exercises = Exercise.objects.filter(difficulty_level=difficulty_level)
-    serializer = ExerciseSerializer(exercises, many=True)
+    serializer = ExerciseListSerializer(exercises, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def exercise_detail(request, pk):
+    try:
+        exercise = Exercise.objects.get(id=pk)
+    except Exercise.DoesNotExist:
+        return Response(
+            {"error": "Exercise not found"}, status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = ExerciseDetailSerializer(exercise)
     return Response(serializer.data, status=status.HTTP_200_OK)

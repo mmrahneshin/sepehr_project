@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 from compress_field import ZipFileField
+from django.core.exceptions import ValidationError
 
 
 class Student(models.Model):
@@ -41,11 +42,31 @@ class Exercise(models.Model):
         return self.title
 
 
+def validate_file_size(max_size):
+    """
+    Returns a validator function that checks if a file's size is under the given max_size.
+
+    :param max_size: Maximum file size in bytes.
+    :return: Validator function.
+    """
+
+    def validator(value):
+        if value.size > max_size:
+            raise ValidationError(
+                _(f"File size must be under {max_size / (1024 * 1024)}MB")
+            )
+
+    return validator
+
+
 class Solution(models.Model):
     id = models.AutoField(primary_key=True)
     student = models.OneToOneField(Student, on_delete=models.PROTECT)
     exercise = models.OneToOneField(Exercise, on_delete=models.PROTECT)
-    solution_file = ZipFileField(upload_to="mycontent/")
+    solution_file = ZipFileField(
+        upload_to="mycontent/",
+        validators=[validate_file_size(1 * 1024 * 1024)],  # 1MB limit
+    )
 
     def __str__(self):
         return f"{self.exercise} + {self.student} + {self.id}"

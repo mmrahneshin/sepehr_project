@@ -1,18 +1,37 @@
-# POST http://127.0.0.1:8000/student-login/login/ HTTP/1.1
-# content-type: application/json
+POST http://127.0.0.1:8000/student-login/login/ HTTP/1.1
+content-type: application/json
 
-# {
-#     "username_or_email": "me222@mail.com",
-#     "password": "1234"
-# }
+{
+    "username_or_email": "me222@mail.com",
+    "password": "1234"
+}
 
 
+###
 
-POST http://127.0.0.1:8000/exercises HTTP/1.1
+
+POST http://127.0.0.1:8000/student-signup/signup/ HTTP/1.1
 content-type: application/json
 
 {
     "username": "mmrahneshin222",
     "password": "1234",
-    "email" : "me222@mail.com"
+    "email" : "me2222@mail.com"
 }
+
+
+###
+
+GET http://127.0.0.1:8000/exercises/ HTTP/1.1
+content-type: application/json 
+
+
+###
+
+
+GET http://127.0.0.1:8000/exercises/1  HTTP/1.1
+content-type: application/json 
+Authorization: Token 38eeb1033283e86846589b6bb510720010e07bea
+
+
+

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from core.models import Student, Exercise
+from core.models import Student, Exercise, Solution
 
 
 class StudentLoginSerializer(serializers.ModelSerializer):
@@ -65,7 +65,42 @@ class StudentSignupSerializer(serializers.ModelSerializer):
         return student
 
 
-class ExerciseSerializer(serializers.ModelSerializer):
+class ExerciseListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exercise
-        fields = ["id", "title", "difficulty_level", "is_visible"]
+        fields = ["id", "title", "difficulty_level"]
+
+
+class ExerciseDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exercise
+        fields = [
+            "id",
+            "title",
+            "exercise_content",
+            "java_definition",
+            "cpp_definition",
+            "difficulty_level",
+        ]
+
+
+class SolutionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Solution
+        fields = ["student", "exercise", "solution_file"]
+
+    def validate_solution_file(self, value):
+        # Ensure the file size is within the limit
+        max_size = 1 * 1024 * 1024  # 1MB
+        if value.size > max_size:
+            raise serializers.ValidationError("File size must be under 1MB")
+        return value
+
+    def create(self, validated_data):
+        student = self.context["request"].user.student_profile
+        solution = Solution.objects.create(
+            student=student,
+            exercise=validated_data["exercise"],
+            solution_file=validated_data["solution_file"],
+        )
+        return solution
