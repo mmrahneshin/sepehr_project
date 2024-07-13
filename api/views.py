@@ -94,9 +94,11 @@ def student_signup(request):
 def exercise_list(request):
     difficulty_level = request.query_params.get("dfl")
     if difficulty_level is None:
-        exercises = Exercise.objects.all()
+        exercises = Exercise.objects.filter(is_visible=True)
     else:
-        exercises = Exercise.objects.filter(difficulty_level=difficulty_level)
+        exercises = Exercise.objects.filter(
+            difficulty_level=difficulty_level, is_visible=True
+        )
     serializer = ExerciseListSerializer(exercises, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
