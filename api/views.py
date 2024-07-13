@@ -6,6 +6,7 @@ from .serializers import (
     ExerciseDetailSerializer,
     ExerciseListSerializer,
     SolutionSerializer,
+    ResultSerializer,
 )
 from rest_framework import status
 from django.contrib.auth import authenticate
@@ -14,7 +15,7 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError as DjangoIntegrityError
-from core.models import Exercise
+from core.models import Exercise, Result
 
 
 @api_view(["POST"])
@@ -123,3 +124,14 @@ def upload_solution(request):
             status=status.HTTP_201_CREATED,
         )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def get_results_by_exercise_and_student(request, pk):
+    user = request.user
+
+    results = Result.objects.filter(exercise__id=pk, student__user=user)
+
+    serializer = ResultSerializer(results, many=True)
+
+    return Response(serializer.data)

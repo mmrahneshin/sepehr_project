@@ -7,5 +7,10 @@ urlpatterns = [
     re_path(r"^student-signup/signup/$", views.student_signup, name="student_signup"),
     re_path(r"^exercises/$", views.exercise_list, name="exercise-list"),
     re_path(r"^exercises/(?P<pk>\d+)/$", views.exercise_detail, name="exercise-detail"),
+    re_path(
+        r"^exercises/(?P<pk>\d+)/results",
+        views.get_results_by_exercise_and_student,
+        name="get-results-by-exercise-and-student",
+    ),
     re_path(r"^upload-solution/$", views.upload_solution, name="upload-solution"),
 ]

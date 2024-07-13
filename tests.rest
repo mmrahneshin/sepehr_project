@@ -31,7 +31,13 @@ content-type: application/json
 
 GET http://127.0.0.1:8000/exercises/1  HTTP/1.1
 content-type: application/json 
-Authorization: Token 7918f73795200c93d88ce9af8e78e8e0cfb02dbc
+Authorization: Token 15597257ca08bbda6943fde52aa9f6cdc6b176ee
 
 
 ###
+
+
+
+GET http://127.0.0.1:8000/exercises/2/results  HTTP/1.1
+content-type: application/json 
+Authorization: Token 15597257ca08bbda6943fde52aa9f6cdc6b176ee

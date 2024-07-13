@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from core.models import Student, Exercise, Solution
+from core.models import Student, Exercise, Solution, Result
 
 
 class StudentLoginSerializer(serializers.ModelSerializer):
@@ -137,3 +137,14 @@ class SolutionSerializer(serializers.ModelSerializer):
             language=validated_data["language"],
         )
         return solution
+
+
+class ResultSerializer(serializers.ModelSerializer):
+    reference_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Result
+        exclude = ["id", "student", "exercise", "solution"]
+
+    def get_reference_id(self, obj):
+        return f"{obj.exercise.id}_{obj.student.user.username}_{obj.solution.id}"

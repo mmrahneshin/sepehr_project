@@ -30,8 +30,12 @@ class Exercise(models.Model):
     exercise_name = models.CharField(max_length=128, blank=False, unique=True)
     exercise_content = models.TextField(blank=True)
     is_visible = models.BooleanField(default=False)
-    java_definition = ZipFileField(upload_to="mycontent/Exercises_CPP/", blank=True)
-    cpp_definition = ZipFileField(upload_to="mycontent/Exercises_JAVA/", blank=True)
+    java_definition = ZipFileField(
+        upload_to="mycontent/Exercises/Exercises_CPP/", blank=True
+    )
+    cpp_definition = ZipFileField(
+        upload_to="mycontent/Exercises/Exercises_JAVA/", blank=True
+    )
     weight = models.IntegerField(
         default=1, validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
@@ -62,7 +66,7 @@ def validate_file_size(max_size):
 
 def solution_file_upload_to(instance, filename):
     return os.path.join(
-        "solutionsFile",
+        "mycontent/solutionsFile",
         instance.student.user.username,
         instance.exercise.exercise_name,
         instance.language,
@@ -98,7 +102,6 @@ class Result(models.Model):
     )
     compile_time = models.DateTimeField()
     error_message = models.CharField(max_length=256)
-    exercise_content = models.TextField(blank=True)
     output = models.JSONField()
 
     def __str__(self):
