@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -29,8 +30,8 @@ class Exercise(models.Model):
     exercise_name = models.CharField(max_length=128, blank=False, unique=True)
     exercise_content = models.TextField(blank=True)
     is_visible = models.BooleanField(default=False)
-    java_definition = ZipFileField(upload_to="mycontent/", blank=True)
-    cpp_definition = ZipFileField(upload_to="mycontent/", blank=True)
+    java_definition = ZipFileField(upload_to="mycontent/Exercises_CPP/", blank=True)
+    cpp_definition = ZipFileField(upload_to="mycontent/Exercises_JAVA/", blank=True)
     weight = models.IntegerField(
         default=1, validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
@@ -53,29 +54,44 @@ def validate_file_size(max_size):
     def validator(value):
         if value.size > max_size:
             raise ValidationError(
-                _(f"File size must be under {max_size / (1024 * 1024)}MB")
+                f"File size must be under {max_size / (1024 * 1024)}MB"
             )
 
     return validator
 
 
-class Solution(models.Model):
-    id = models.AutoField(primary_key=True)
-    student = models.OneToOneField(Student, on_delete=models.PROTECT)
-    exercise = models.OneToOneField(Exercise, on_delete=models.PROTECT)
-    solution_file = ZipFileField(
-        upload_to="mycontent/",
-        validators=[validate_file_size(1 * 1024 * 1024)],  # 1MB limit
+def solution_file_upload_to(instance, filename):
+    return os.path.join(
+        "solutionsFile",
+        instance.student.user.username,
+        instance.exercise.exercise_name,
+        instance.language,
+        filename,
     )
 
+
+class Solution(models.Model):
+    LANGUAGE = [
+        ("cpp", "cpp"),
+        ("java", "java"),
+    ]
+    id = models.AutoField(primary_key=True)
+    student = models.ForeignKey(Student, on_delete=models.PROTECT)
+    exercise = models.ForeignKey(Exercise, on_delete=models.PROTECT)
+    solution_file = ZipFileField(
+        upload_to=solution_file_upload_to,
+        validators=[validate_file_size(1 * 1024 * 1024)],  # 1MB limit
+    )
+    language = models.CharField(max_length=10, choices=LANGUAGE)
+
     def __str__(self):
-        return f"{self.exercise} + {self.student} + {self.id}"
+        return f"{self.exercise}_{self.language} + {self.student} + {self.id}"
 
 
 class Result(models.Model):
     id = models.AutoField(primary_key=True)
-    student = models.OneToOneField(Student, on_delete=models.PROTECT)
-    exercise = models.OneToOneField(Exercise, on_delete=models.PROTECT)
+    student = models.ForeignKey(Student, on_delete=models.PROTECT)
+    exercise = models.ForeignKey(Exercise, on_delete=models.PROTECT)
     solution = models.OneToOneField(Solution, on_delete=models.PROTECT)
     score = models.IntegerField(
         validators=[MaxValueValidator(100), MinValueValidator(0)]

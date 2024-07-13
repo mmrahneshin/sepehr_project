@@ -100,21 +100,41 @@ class ExerciseDetailSerializer(serializers.ModelSerializer):
 
 
 class SolutionSerializer(serializers.ModelSerializer):
+    exercise_id = serializers.IntegerField(write_only=True)
+    solution_file = serializers.FileField(write_only=True)
+
     class Meta:
         model = Solution
-        fields = ["student", "exercise", "solution_file"]
+        fields = ["exercise_id", "solution_file"]
 
-    def validate_solution_file(self, value):
-        # Ensure the file size is within the limit
-        max_size = 1 * 1024 * 1024  # 1MB
-        if value.size > max_size:
-            raise serializers.ValidationError("File size must be under 1MB")
-        return value
+    def validate(self, attrs):
+        exercise_id = attrs.pop("exercise_id")
+
+        # Validate exercise exists
+        try:
+            exercise = Exercise.objects.get(pk=exercise_id)
+        except Exercise.DoesNotExist:
+            raise serializers.ValidationError("Exercise does not exist")
+
+        # Get user from request
+        user = self.context["request"].user
+
+        # Ensure the user is a student
+        if not hasattr(user, "student_profile"):
+            raise serializers.ValidationError("User is not a student")
+
+        student = user.student_profile
+
+        attrs["exercise"] = exercise
+        attrs["student"] = student
+        return attrs
 
     def create(self, validated_data):
-        student = self.context["request"].user.student_profile
+        print("@@@@@")
+        print(validated_data)
+        # validated_data.pop("exercise_id")
         solution = Solution.objects.create(
-            student=student,
+            student=validated_data["student"],
             exercise=validated_data["exercise"],
             solution_file=validated_data["solution_file"],
         )

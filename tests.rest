@@ -14,7 +14,7 @@ POST http://127.0.0.1:8000/student-signup/signup/ HTTP/1.1
 content-type: application/json
 
 {
-    "username": "mmrahneshin222",
+    "username": "mmrahneshin22",
     "password": "1234",
     "email" : "me2222@mail.com"
 }
@@ -34,4 +34,4 @@ content-type: application/json
 Authorization: Token 38eeb1033283e86846589b6bb510720010e07bea
 
 
-
+###

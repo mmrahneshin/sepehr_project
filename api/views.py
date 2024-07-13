@@ -5,6 +5,7 @@ from .serializers import (
     StudentLoginSerializer,
     ExerciseDetailSerializer,
     ExerciseListSerializer,
+    SolutionSerializer,
 )
 from rest_framework import status
 from django.contrib.auth import authenticate
@@ -110,3 +111,15 @@ def exercise_detail(request, pk):
 
     serializer = ExerciseDetailSerializer(exercise, context={"request": request})
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def upload_solution(request):
+    serializer = SolutionSerializer(data=request.data, context={"request": request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(
+            {"message": "Solution uploaded successfully"},
+            status=status.HTTP_201_CREATED,
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
