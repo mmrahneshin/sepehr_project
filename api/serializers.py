@@ -72,16 +72,31 @@ class ExerciseListSerializer(serializers.ModelSerializer):
 
 
 class ExerciseDetailSerializer(serializers.ModelSerializer):
+    java_definition_url = serializers.SerializerMethodField()
+    cpp_definition_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Exercise
         fields = [
             "id",
             "title",
             "exercise_content",
-            "java_definition",
-            "cpp_definition",
+            "java_definition_url",
+            "cpp_definition_url",
             "difficulty_level",
         ]
+
+    def get_java_definition_url(self, obj):
+        request = self.context.get("request")
+        if obj.java_definition:
+            return request.build_absolute_uri(obj.java_definition.url)
+        return None
+
+    def get_cpp_definition_url(self, obj):
+        request = self.context.get("request")
+        if obj.cpp_definition:
+            return request.build_absolute_uri(obj.cpp_definition.url)
+        return None
 
 
 class SolutionSerializer(serializers.ModelSerializer):

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -148,4 +149,9 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
+]
+
+STATIC_URL = "/mycontent/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "mycontent"),  # Replace 'static' with your directory name
 ]

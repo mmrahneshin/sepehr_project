@@ -102,11 +102,11 @@ def exercise_list(request):
 @api_view(["GET"])
 def exercise_detail(request, pk):
     try:
-        exercise = Exercise.objects.get(id=pk)
+        exercise = Exercise.objects.get(pk=pk)
     except Exercise.DoesNotExist:
         return Response(
             {"error": "Exercise not found"}, status=status.HTTP_404_NOT_FOUND
         )
 
-    serializer = ExerciseDetailSerializer(exercise)
+    serializer = ExerciseDetailSerializer(exercise, context={"request": request})
     return Response(serializer.data, status=status.HTTP_200_OK)
